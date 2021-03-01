@@ -31,9 +31,9 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $this->validate($request,[
-            'title' => 'required|string|max:191',
-            'description' => 'required|string|max:190',
-            'price' => 'required',
+            'Title' => 'required|string|max:191',
+            'Description' => 'required|string|max:190',
+            'Price' => 'required',
 
         ]);
 
@@ -46,9 +46,9 @@ class ProductController extends Controller
         }
         return Product::create([
 
-            'Title'=>$request['title'],
-            'Description'=>$request['description'],
-            'Price'=>$request['price'],
+            'Title'=>$request['Title'],
+            'Description'=>$request['Description'],
+            'Price'=>$request['Price'],
             'Image'=>$name,
         ]);
     }
@@ -73,7 +73,43 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request,[
+            'Title' => 'required|string|max:191',
+            'Description' => 'required|string|max:190',
+            'Price' => 'required',
+
+        ]);
+
+        if($request->image)
+        {
+            //To convert string to image
+            $name = time().'.' . explode('/', explode(':', substr($request->image, 0, strpos($request->image, ';')))[1])[1];
+            \Image::make($request->image)->save(public_path('images/').$name);
+            return Product::where('id',$id)->update(array('Title'=>$request['Title'],'Description'=>$request['Description'],'Price'=>$request['Price'],'Image'=>$name));
+
+
+        }
+        else {
+            return response()->json(['error'=>'resource not found'],200);
+        }
+
+//        else{
+//
+//            return response()->json(['error'=>'you have to choose a file'],200);
+//
+//        }
+
+
+
+//        return Product::create([
+//
+//            'Title'=>$request['Title'],
+//            'Description'=>$request['Description'],
+//            'Price'=>$request['Price'],
+//            'Image'=>$name,
+//        ]);
+
+
     }
 
     /**

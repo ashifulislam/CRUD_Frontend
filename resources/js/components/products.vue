@@ -103,7 +103,7 @@
                                                                                     <td>{{product.Price}}</td>
                                                                                     <img height="120px" width="100px"  class="img" :src="get_image(product.Image)" alt="user-img">
                                                                                     <td>
-                                                                                        <a style="margin-auto:0px;"  id="edit-btn" @click="edit_modal(product)"  class="btn btn-sm btn-primary waves-effect waves-light f-left">
+                                                                                        <a style="margin-auto:0px;"   id="edit-btn" @click="edit_modal(product)"  class="btn btn-sm btn-primary waves-effect waves-light f-left">
                                                                                             Edit Product
                                                                                         </a>
                                                                                     </td>
@@ -165,30 +165,30 @@
                         </button>
                     </div>
 <!--                    <form @submit.prevent="updateUser()" >-->
-                    <form @submit.prevent="edit_mode? create_product():update_product()" enctype="multipart/form-data">
+                    <form @submit.prevent="edit_mode? create_product():update_product()" >
 
 
                         <div class="modal-body">
                             <!--Required to put the form here -->
                             <div class="form-group">
-                                <input v-model="form.title" type="text" name="title"
+                                <input v-model="form.Title" type="text" name="Title"
                                        placeholder="Enter product title"
-                                       class="form-control" :class="{ 'is-invalid': form.errors.has('title') }">
-                                <has-error :form="form" field="title"></has-error>
+                                       class="form-control" :class="{ 'is-invalid': form.errors.has('Title') }">
+                                <has-error :form="form" field="Title"></has-error>
                             </div>
 
                             <div class="form-group">
-                            <textarea v-model="form.description" type="text" name="description"
+                            <textarea v-model="form.Description" type="text" name="Description"
                                       placeholder="Enter product description" rows="5" cols="40"
-                                      class="form-control" :class="{'is-invalid': form.errors.has('description') }"></textarea>
-                                <has-error :form="form" field="description"></has-error>
+                                      class="form-control" :class="{'is-invalid': form.errors.has('Description') }"></textarea>
+                                <has-error :form="form" field="Description"></has-error>
                             </div>
 
                             <div class="form-group">
-                                <input v-model="form.price" type="number" name="price"
+                                <input v-model="form.Price" type="number" name="Price"
                                        placeholder="Enter product price"
-                                       class="form-control" :class="{ 'is-invalid': form.errors.has('price') }">
-                                <has-error :form="form" field="price"></has-error>
+                                       class="form-control" :class="{ 'is-invalid': form.errors.has('Price') }">
+                                <has-error :form="form" field="Price"></has-error>
                             </div>
 
 
@@ -196,8 +196,7 @@
                                 <div class="col-sm-12">
                                     <label>Upload Image</label>
                                     <br>
-                                    <input @change="upload_image" name="photo" value="photo"  type="file"  class="form-input">
-<!--                                    <input @change="updateProfile" type="file"   class="form-input">-->
+                                    <input  type="file" @change="upload_image" name="photo" value="photo"   class="form-input">
                                 </div>
 
                             </div>
@@ -227,33 +226,36 @@
 export default {
     data()
     {
-
         return{
+
             edit_mode:false,
             //Here the product object is created
             products:{},
             form: new Form({
-                'title':'',
-                'description':'',
-                'price':'',
+
+                Title:'',
+                Description:'',
+                Price:'',
+                id:'',
 
             })
         }
     },
     methods:{
+
         new_modal()
         {
+
             this.edit_mode = true;
-            $('#addNew').modal('show')
-        },
-        edit_modal(products)
-        {
-            this.edit_mode = false;
-            //reset the form
             this.form.reset();
             $('#addNew').modal('show')
-            this.form.fill(products);
-
+        },
+        edit_modal(product)
+        {
+            this.edit_mode = false;
+            this.form.reset();
+            $('#addNew').modal('show')
+            this.form.fill(product);
         },
         create_product()
         {
@@ -275,9 +277,33 @@ export default {
         },
         update_product()
         {
+           this.form.put('api/product/'+this.form.id).then(response=>{
 
+               $('#addNew').modal('hide')
+               if(response.status===200){
+                   swal.fire({
+                       type: 'error',
+                       title: 'Oops...',
+                       text: 'You have to choose a file',
+                   })
+               }
+               else{
+                   toast.fire({
+                       icon: 'success',
+                       title: 'Products are updated successfully'
+                   })
+                   //the event is initialized after creating the user
+                   Fire.$emit('afterCreate');
+               }
+
+
+
+
+
+           }).catch(()=>{
+
+           })
         },
-
         upload_image(e)
         {
             //grab the files
@@ -290,6 +316,16 @@ export default {
                     this.form.image = reader.result;
                 }
                 reader.readAsDataURL(file);
+            }
+            else{
+                //hide the modal window
+                $('#addNew').modal('hide')
+                swal.fire({
+                    type: 'error',
+                    title: 'Oops...',
+                    text: 'You are uploading a large file',
+                })
+
             }
 
             console.log(e);
@@ -318,8 +354,6 @@ export default {
             //made a get request with data
             axios.get('api/product').
             then(({ data }) => (this.products = data));
-
-
         },
 
     },

@@ -2164,7 +2164,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2172,23 +2171,24 @@ __webpack_require__.r(__webpack_exports__);
       //Here the product object is created
       products: {},
       form: new Form({
-        'title': '',
-        'description': '',
-        'price': ''
+        Title: '',
+        Description: '',
+        Price: '',
+        id: ''
       })
     };
   },
   methods: {
     new_modal: function new_modal() {
       this.edit_mode = true;
-      $('#addNew').modal('show');
-    },
-    edit_modal: function edit_modal(products) {
-      this.edit_mode = false; //reset the form
-
       this.form.reset();
       $('#addNew').modal('show');
-      this.form.fill(products);
+    },
+    edit_modal: function edit_modal(product) {
+      this.edit_mode = false;
+      this.form.reset();
+      $('#addNew').modal('show');
+      this.form.fill(product);
     },
     create_product: function create_product() {
       //made post request
@@ -2203,7 +2203,26 @@ __webpack_require__.r(__webpack_exports__);
         Fire.$emit('afterCreate');
       })["catch"](function () {});
     },
-    update_product: function update_product() {},
+    update_product: function update_product() {
+      this.form.put('api/product/' + this.form.id).then(function (response) {
+        $('#addNew').modal('hide');
+
+        if (response.status === 200) {
+          swal.fire({
+            type: 'error',
+            title: 'Oops...',
+            text: 'You have to choose a file'
+          });
+        } else {
+          toast.fire({
+            icon: 'success',
+            title: 'Products are updated successfully'
+          }); //the event is initialized after creating the user
+
+          Fire.$emit('afterCreate');
+        }
+      })["catch"](function () {});
+    },
     upload_image: function upload_image(e) {
       var _this = this;
 
@@ -2218,6 +2237,14 @@ __webpack_require__.r(__webpack_exports__);
         };
 
         reader.readAsDataURL(file);
+      } else {
+        //hide the modal window
+        $('#addNew').modal('hide');
+        swal.fire({
+          type: 'error',
+          title: 'Oops...',
+          text: 'You are uploading a large file'
+        });
       }
 
       console.log(e);
@@ -42881,7 +42908,6 @@ var render = function() {
               _c(
                 "form",
                 {
-                  attrs: { enctype: "multipart/form-data" },
                   on: {
                     submit: function($event) {
                       $event.preventDefault()
@@ -42902,30 +42928,30 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.form.title,
-                              expression: "form.title"
+                              value: _vm.form.Title,
+                              expression: "form.Title"
                             }
                           ],
                           staticClass: "form-control",
-                          class: { "is-invalid": _vm.form.errors.has("title") },
+                          class: { "is-invalid": _vm.form.errors.has("Title") },
                           attrs: {
                             type: "text",
-                            name: "title",
+                            name: "Title",
                             placeholder: "Enter product title"
                           },
-                          domProps: { value: _vm.form.title },
+                          domProps: { value: _vm.form.Title },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.$set(_vm.form, "title", $event.target.value)
+                              _vm.$set(_vm.form, "Title", $event.target.value)
                             }
                           }
                         }),
                         _vm._v(" "),
                         _c("has-error", {
-                          attrs: { form: _vm.form, field: "title" }
+                          attrs: { form: _vm.form, field: "Title" }
                         })
                       ],
                       1
@@ -42940,22 +42966,22 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.form.description,
-                              expression: "form.description"
+                              value: _vm.form.Description,
+                              expression: "form.Description"
                             }
                           ],
                           staticClass: "form-control",
                           class: {
-                            "is-invalid": _vm.form.errors.has("description")
+                            "is-invalid": _vm.form.errors.has("Description")
                           },
                           attrs: {
                             type: "text",
-                            name: "description",
+                            name: "Description",
                             placeholder: "Enter product description",
                             rows: "5",
                             cols: "40"
                           },
-                          domProps: { value: _vm.form.description },
+                          domProps: { value: _vm.form.Description },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
@@ -42963,7 +42989,7 @@ var render = function() {
                               }
                               _vm.$set(
                                 _vm.form,
-                                "description",
+                                "Description",
                                 $event.target.value
                               )
                             }
@@ -42971,7 +42997,7 @@ var render = function() {
                         }),
                         _vm._v(" "),
                         _c("has-error", {
-                          attrs: { form: _vm.form, field: "description" }
+                          attrs: { form: _vm.form, field: "Description" }
                         })
                       ],
                       1
@@ -42986,30 +43012,30 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.form.price,
-                              expression: "form.price"
+                              value: _vm.form.Price,
+                              expression: "form.Price"
                             }
                           ],
                           staticClass: "form-control",
-                          class: { "is-invalid": _vm.form.errors.has("price") },
+                          class: { "is-invalid": _vm.form.errors.has("Price") },
                           attrs: {
                             type: "number",
-                            name: "price",
+                            name: "Price",
                             placeholder: "Enter product price"
                           },
-                          domProps: { value: _vm.form.price },
+                          domProps: { value: _vm.form.Price },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.$set(_vm.form, "price", $event.target.value)
+                              _vm.$set(_vm.form, "Price", $event.target.value)
                             }
                           }
                         }),
                         _vm._v(" "),
                         _c("has-error", {
-                          attrs: { form: _vm.form, field: "price" }
+                          attrs: { form: _vm.form, field: "Price" }
                         })
                       ],
                       1
@@ -43024,9 +43050,9 @@ var render = function() {
                         _c("input", {
                           staticClass: "form-input",
                           attrs: {
+                            type: "file",
                             name: "photo",
-                            value: "photo",
-                            type: "file"
+                            value: "photo"
                           },
                           on: { change: _vm.upload_image }
                         })
