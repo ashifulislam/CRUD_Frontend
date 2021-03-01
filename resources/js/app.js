@@ -7,19 +7,12 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
+import { Form, HasError, AlertError } from 'vform';
 
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
+import swal from 'sweetalert2'
 
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+import Vue from 'vue'
+// Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -27,6 +20,47 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+window.swal = swal;
+
+const toast = swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+        toast.addEventListener('mouseenter', swal.stopTimer)
+        toast.addEventListener('mouseleave', swal.resumeTimer)
+    }
+})
+window.toast = toast;
+
+window.Fire=new Vue();
+window.Form= Form;
+
+Vue.component(HasError.name, HasError)
+Vue.component(AlertError.name, AlertError)
+
+
+//Registered vue router
+import VueRouter from 'vue-router'
+Vue.use(VueRouter)
+let routes = [
+
+    { path: '/products', component: require('./components/products.vue').default },
+    { path: '/example_component', component: require('./components/ExampleComponent.vue').default },
+    // { path: '/createAgentProfile', component: require('./components/CreateAgentProfile.vue').default },
+
+    // { path: 'Message', component: require('./components/Message.vue').default },
+
+]
+//registered routes
+const router = new VueRouter({
+
+    routes // short for `routes: routes`
+})
+
 const app = new Vue({
-    el: '#app',
+    el: '#pcoded',
+    router,
 });
