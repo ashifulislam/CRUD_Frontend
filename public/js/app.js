@@ -2138,32 +2138,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2195,12 +2169,21 @@ __webpack_require__.r(__webpack_exports__);
       this.form.post('api/product').then(function (response) {
         //hide the modal window
         $('#addNew').modal('hide');
-        toast.fire({
-          icon: 'success',
-          title: 'Products are added successfully'
-        }); //the event is initialized after creating the user
 
-        Fire.$emit('afterCreate');
+        if (response.status === 200) {
+          swal.fire({
+            type: 'error',
+            title: 'Oops...',
+            text: 'You have to choose a file'
+          });
+        } else {
+          toast.fire({
+            icon: 'success',
+            title: 'Products are added successfully'
+          }); //the event is initialized after creating the user
+
+          Fire.$emit('afterCreate');
+        }
       })["catch"](function () {});
     },
     update_product: function update_product() {
@@ -2253,34 +2236,46 @@ __webpack_require__.r(__webpack_exports__);
       return "images/" + image;
     },
     delete_product: function delete_product(id) {
-      //To delete product
-      axios["delete"]('api/product/' + id).then(function (response) {
-        toast.fire({
-          icon: 'success',
-          title: 'Products are deleted successfully'
-        }); //Here the event is created
+      var _this2 = this;
 
-        Fire.$emit('afterCreate');
-      })["catch"](function () {});
+      swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then(function (result) {
+        if (result.isConfirmed) {
+          _this2.form["delete"]('api/product/' + id).then(function () {
+            swal.fire('Deleted!', 'Products are deleted.', 'success'); //Here the event is created
+
+            Fire.$emit('afterCreate');
+          })["catch"](function () {
+            swal("Failed", "There was something mistakes");
+          });
+        }
+      });
     },
     loadUser: function loadUser() {
-      var _this2 = this;
+      var _this3 = this;
 
       //made a get request with data
       axios.get('api/product').then(function (_ref) {
         var data = _ref.data;
-        return _this2.products = data;
+        return _this3.products = data;
       });
     }
   },
   created: function created() {
-    var _this3 = this;
+    var _this4 = this;
 
     //When the component is created this is called
     this.loadUser(); //After load the user here we fire on(updated)
 
     Fire.$on('afterCreate', function () {
-      _this3.loadUser();
+      _this4.loadUser();
     });
   }
 });
@@ -42683,7 +42678,7 @@ var render = function() {
                             "a",
                             {
                               staticClass:
-                                "btn btn-sm btn-primary waves-effect waves-light f-right",
+                                "btn btn-sm btn-primary waves-effect waves-light f-left",
                               staticStyle: { margin: "5px" },
                               attrs: { "data-target": "#addNew" },
                               on: { click: _vm.new_modal }
@@ -42796,9 +42791,7 @@ var render = function() {
                                                             staticClass:
                                                               "btn btn-sm btn-primary btn-danger waves-effect waves-light f-left",
                                                             attrs: {
-                                                              id: "delete-btn",
-                                                              onclick:
-                                                                "return confirm('Are you sure you want to delete this item?');"
+                                                              id: "delete-btn"
                                                             },
                                                             on: {
                                                               click: function(
@@ -43176,7 +43169,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("tr", [
-      _c("th", { attrs: { scope: "row" } }, [_vm._v("ID")]),
+      _c("th", { attrs: { scope: "row" } }, [_vm._v("Id")]),
       _vm._v(" "),
       _c("th", { attrs: { scope: "row" } }, [_vm._v("Title")]),
       _vm._v(" "),

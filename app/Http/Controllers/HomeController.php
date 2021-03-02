@@ -25,7 +25,8 @@ class HomeController extends Controller
     {
         return view('home');
     }
-    public function product_home(){
+    public function product_home()
+    {
         return view('products.productHome');
     }
 }

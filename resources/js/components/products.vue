@@ -10,20 +10,15 @@
                             <div class="col-lg-12">
                                 <div class="cover-profile">
                                     <div class="profile-bg-img">
-<!--                                        <img class="profile-bg-img img-fluid" src="local_agent\files\assets\images\user-profile\bg-img1.jpg" alt="bg-img">-->
                                         <div class="card-block user-info">
                                             <div class="col-md-12">
                                                 <div class="media-left">
                                                     <a href="#" class="profile-image">
-<!--                                                        <img v-for="user in users" height="150px" width="100px"  class="img" :src="getProfilePhoto(user.photo)" alt="user-img">-->
                                                     </a>
                                                 </div>
                                                 <div class="media-body row">
                                                     <div class="col-lg-12">
-<!--                                                        <div v-for="user in users" class="user-title">-->
-<!--                                                            <h2>{{user.name}}</h2>-->
-<!--                                                            <span class="text-white">{{user.skill}}</span>-->
-<!--                                                        </div>-->
+
                                                     </div>
                                                     <div>
 
@@ -45,18 +40,7 @@
                                             <a  class="nav-link active" data-toggle="tab" href="#personal" role="tab">View Product</a>
                                             <div class="slide"></div>
                                         </li>
-<!--                                        <li class="nav-item">-->
-<!--                                            <a class="nav-link" data-toggle="tab" href="#binfo" role="tab">User's Services</a>-->
-<!--                                            <div class="slide"></div>-->
-<!--                                        </li>-->
-<!--                                        <li class="nav-item">-->
-<!--                                            <a class="nav-link" data-toggle="tab" href="#contacts" role="tab">User's Contacts</a>-->
-<!--                                            <div class="slide"></div>-->
-<!--                                        </li>-->
-<!--                                        <li class="nav-item">-->
-<!--                                            <a class="nav-link" data-toggle="tab" href="#review" role="tab">Reviews</a>-->
-<!--                                            <div class="slide"></div>-->
-<!--                                        </li>-->
+
                                     </ul>
                                 </div>
                                 <!-- tab header end -->
@@ -68,7 +52,7 @@
                                         <div class="card">
                                             <div class="card-header" >
 
-                                                <a style="margin:5px;"  @click="new_modal" data-target="#addNew"  class="btn btn-sm btn-primary waves-effect waves-light f-right">
+                                                <a style="margin:5px;"  @click="new_modal" data-target="#addNew"  class="btn btn-sm btn-primary waves-effect waves-light f-left">
                                                     Add Product
                                                 </a>
                                             </div>
@@ -86,7 +70,7 @@
                                                                             <table class="table">
                                                                                 <tbody>
                                                                                 <tr>
-                                                                                    <th scope="row">ID</th>
+                                                                                    <th scope="row">Id</th>
                                                                                     <th scope="row">Title</th>
                                                                                     <th scope="row">Description</th>
                                                                                     <th scope="row">Price</th>
@@ -108,7 +92,7 @@
                                                                                         </a>
                                                                                     </td>
                                                                                     <td>
-                                                                                        <a id="delete-btn" @click="delete_product(product.id)"   class="btn btn-sm btn-primary btn-danger waves-effect waves-light f-left" onclick="return confirm('Are you sure you want to delete this item?');"  >
+                                                                                        <a id="delete-btn" @click="delete_product(product.id)"   class="btn btn-sm btn-primary btn-danger waves-effect waves-light f-left">
                                                                                             Delete Product
                                                                                         </a>
                                                                                     </td>
@@ -190,34 +174,24 @@
                                        class="form-control" :class="{ 'is-invalid': form.errors.has('Price') }">
                                 <has-error :form="form" field="Price"></has-error>
                             </div>
-
-
                             <div class="form-group">
                                 <div class="col-sm-12">
                                     <label>Upload Image</label>
                                     <br>
                                     <input  type="file" @change="upload_image" name="photo" value="photo"   class="form-input">
                                 </div>
-
                             </div>
-
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                             <button v-show="edit_mode" type="submit" class="btn btn-primary">Add New</button>
                             <button v-show="!edit_mode" type="submit" class="btn btn-success">Update</button>
-
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-
-
-
-
-
 
 </template>
 
@@ -232,12 +206,10 @@ export default {
             //Here the product object is created
             products:{},
             form: new Form({
-
                 Title:'',
                 Description:'',
                 Price:'',
                 id:'',
-
             })
         }
     },
@@ -245,7 +217,6 @@ export default {
 
         new_modal()
         {
-
             this.edit_mode = true;
             this.form.reset();
             $('#addNew').modal('show')
@@ -264,13 +235,24 @@ export default {
 
                 //hide the modal window
                 $('#addNew').modal('hide')
+                if(response.status===200){
 
-                toast.fire({
-                    icon: 'success',
-                    title: 'Products are added successfully'
-                })
-                //the event is initialized after creating the user
-                Fire.$emit('afterCreate');
+                    swal.fire({
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'You have to choose a file',
+                    })
+                }
+                else{
+
+                    toast.fire({
+                        icon: 'success',
+                        title: 'Products are added successfully'
+                    })
+                    //the event is initialized after creating the user
+                    Fire.$emit('afterCreate');
+                }
+
 
             }).catch(()=>{
             })
@@ -295,10 +277,6 @@ export default {
                    //the event is initialized after creating the user
                    Fire.$emit('afterCreate');
                }
-
-
-
-
 
            }).catch(()=>{
 
@@ -337,18 +315,32 @@ export default {
 
         delete_product(id)
         {
-            //To delete product
-           axios.delete('api/product/'+id).then(response=>{
-               toast.fire({
-                   icon: 'success',
-                   title: 'Products are deleted successfully'
-               })
-               //Here the event is created
-               Fire.$emit('afterCreate');
-           }).catch(()=>{
+            swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed){
+                    this.form.delete('api/product/'+id).then(()=>{
 
-           })
+                            swal.fire(
+                                'Deleted!',
+                                'Products are deleted.',
+                                'success'
+                            )
+                            //Here the event is created
+                            Fire.$emit('afterCreate');
 
+
+                    }).catch(()=>{
+                        swal("Failed","There was something mistakes")
+                    });
+                }
+            })
         },
         loadUser(){
             //made a get request with data
@@ -358,7 +350,6 @@ export default {
 
     },
     created(){
-
         //When the component is created this is called
         this.loadUser();
         //After load the user here we fire on(updated)

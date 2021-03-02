@@ -43,14 +43,20 @@ class ProductController extends Controller
             $name = time().'.' . explode('/', explode(':', substr($request->image, 0, strpos($request->image, ';')))[1])[1];
             \Image::make($request->image)->save(public_path('images/').$name);
 
-        }
-        return Product::create([
+             Product::create([
 
-            'Title'=>$request['Title'],
-            'Description'=>$request['Description'],
-            'Price'=>$request['Price'],
-            'Image'=>$name,
-        ]);
+                'Title'=>$request['Title'],
+                'Description'=>$request['Description'],
+                'Price'=>$request['Price'],
+                'Image'=>$name,
+            ]);
+            return response()->json(['error'=>'resource not found'],201);
+
+        }
+        else {
+            return response()->json(['error'=>'resource not found'],200);
+        }
+
     }
 
     /**
@@ -85,30 +91,12 @@ class ProductController extends Controller
             //To convert string to image
             $name = time().'.' . explode('/', explode(':', substr($request->image, 0, strpos($request->image, ';')))[1])[1];
             \Image::make($request->image)->save(public_path('images/').$name);
-            return Product::where('id',$id)->update(array('Title'=>$request['Title'],'Description'=>$request['Description'],'Price'=>$request['Price'],'Image'=>$name));
-
-
+             Product::where('id',$id)->update(array('Title'=>$request['Title'],'Description'=>$request['Description'],'Price'=>$request['Price'],'Image'=>$name));
+            return response()->json(['success'=>'file has been choosen'],201);
         }
         else {
             return response()->json(['error'=>'resource not found'],200);
         }
-
-//        else{
-//
-//            return response()->json(['error'=>'you have to choose a file'],200);
-//
-//        }
-
-
-
-//        return Product::create([
-//
-//            'Title'=>$request['Title'],
-//            'Description'=>$request['Description'],
-//            'Price'=>$request['Price'],
-//            'Image'=>$name,
-//        ]);
-
 
     }
 

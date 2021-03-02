@@ -77,10 +77,7 @@
 
 
                     <a href="index-1.htm">
-                        {{--                        <img height="150" width="100" src="{{asset('/img/profile/'.$singleAgent->photo)}}" alt="not">--}}
 
-
-                        {{--                        <img class="img-fluid" src="{{asset('products\files\assets\images\logo.png')}}" alt="Theme-Logo" width = "75%">--}}
                     </a>
 
 
