@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,6 +22,7 @@ class ProductController extends Controller
      */
     public function index()
     {
+        //Retrieving product information
        $products = Product::all();
        return $products;
 
@@ -30,13 +36,14 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        //Storing product information
         $this->validate($request,[
             'Title' => 'required|string|max:191',
             'Description' => 'required|string|max:190',
             'Price' => 'required',
 
         ]);
-
+        //Checking whether image file is clicked or not
         if($request->image)
         {
             //To convert string to image
@@ -85,7 +92,7 @@ class ProductController extends Controller
             'Price' => 'required',
 
         ]);
-
+        //Checking whether the file is checked or not
         if($request->image)
         {
             //To convert string to image
@@ -108,7 +115,7 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-
+        //Deleting product information of the specific product
         $products = Product::find($id);
         $image_path = "images/".$products->Image;
         if(file_exists($image_path))
