@@ -25,7 +25,6 @@ class ProductController extends Controller
         //Retrieving product information
        $products = Product::all();
        return $products;
-
     }
 
     /**
@@ -51,16 +50,15 @@ class ProductController extends Controller
             \Image::make($request->image)->save(public_path('images/').$name);
 
              Product::create([
-
                 'Title'=>$request['Title'],
                 'Description'=>$request['Description'],
                 'Price'=>$request['Price'],
                 'Image'=>$name,
             ]);
             return response()->json(['error'=>'resource not found'],201);
-
         }
         else {
+
             return response()->json(['error'=>'resource not found'],200);
         }
 
@@ -102,6 +100,7 @@ class ProductController extends Controller
             return response()->json(['success'=>'file has been choosen'],201);
         }
         else {
+
             return response()->json(['error'=>'resource not found'],200);
         }
 
